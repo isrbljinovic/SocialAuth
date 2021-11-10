@@ -14,7 +14,7 @@ namespace SocialAuth
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            MainPage = new AppShell();
+            MainPage = new LoginPage();//new AppShell();
         }
 
         protected override void OnStart()
