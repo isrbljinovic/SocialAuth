@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Newtonsoft.Json;
 using Plugin.FacebookClient;
 using SocialAuth.Models;
+using SocialAuth.Services;
 using SocialAuth.Views;
 using Xamarin.Forms;
 
@@ -14,17 +15,18 @@ namespace SocialAuth.ViewModels
     {
         public ICommand OnLoginWithFacebookCommand { get; set; }
 
-        IFacebookClient _facebookService = CrossFacebookClient.Current;
+        private IFacebookClient _facebookService = CrossFacebookClient.Current;
+        private UserProfileService _userProfileService = new UserProfileService();
+
         public LoginViewModel()
         {
             OnLoginWithFacebookCommand = new Command(async () => await LoginFacebookAsync());
         }
 
-        async Task LoginFacebookAsync()
+        private async Task LoginFacebookAsync()
         {
             try
             {
-
                 if (_facebookService.IsLoggedIn)
                 {
                     _facebookService.Logout();
@@ -40,14 +42,21 @@ namespace SocialAuth.ViewModels
                     {
                         case FacebookActionStatus.Completed:
                             var facebookProfile = await Task.Run(() => JsonConvert.DeserializeObject<FacebookProfile>(e.Data));
-                            var socialLoginData = new NetworkAuthData
-                            {
-                                Email = facebookProfile.Email,
-                                Name = $"{facebookProfile.FirstName} {facebookProfile.LastName}",
-                                Id = facebookProfile.UserId
-                            };
-                            await App.Current.MainPage.Navigation.PushModalAsync(new AboutPage());
+                            var socialLoginData = new UserProfile(
+                                facebookProfile.UserId,
+                                $"{facebookProfile.FirstName} {facebookProfile.LastName}",
+                                facebookProfile.Email,
+                                facebookProfile.Picture.Data.Url);
+
+                            //Insert user into DB
+                            await _userProfileService.CreateUserProfile(socialLoginData);
+
+                            var userProfileFromDb = await _userProfileService.GetUserProfileByProfileId(socialLoginData.ProfileId);
+
+                            //Success - wellcome in
+                            await App.Current.MainPage.Navigation.PushModalAsync(new HomePage());
                             break;
+
                         case FacebookActionStatus.Canceled:
                             break;
                     }

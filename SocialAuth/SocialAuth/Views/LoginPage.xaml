@@ -1,23 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="SocialAuth.Views.LoginPage"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    x:Class="SocialAuth.Views.LoginPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Login"
+    Shell.NavBarIsVisible="False"
+    mc:Ignorable="d">
     <ContentPage.Content>
-        <StackLayout Padding="20"
-                         VerticalOptions="CenterAndExpand">
+        <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
 
-            <Button Text="Login with Facebook"
-                        ImageSource="ic_fb"
-                        Command="{Binding OnLoginWithFacebookCommand}"
-                        HeightRequest="45"
-                        TextColor="White"
-                        BackgroundColor="#4768AD"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="FillAndExpand"/>
+            <Button
+                BackgroundColor="#4768AD"
+                Command="{Binding OnLoginWithFacebookCommand}"
+                HeightRequest="45"
+                HorizontalOptions="CenterAndExpand"
+                ImageSource="ic_fb"
+                Text="Login with Facebook"
+                TextColor="White"
+                VerticalOptions="FillAndExpand" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
