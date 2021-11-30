@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAuth.Android", "SocialAuth.Android\SocialAuth.Android.csproj", "{DEF498DD-D70E-47C6-954C-BEDD72C3583E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialAuth", "SocialAuth\SocialAuth.csproj", "{B1E2D532-8AA2-4455-80A6-071D21BDDFA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialAuth", "SocialAuth\SocialAuth.csproj", "{B1E2D532-8AA2-4455-80A6-071D21BDDFA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
