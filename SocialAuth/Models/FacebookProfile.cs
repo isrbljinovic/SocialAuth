@@ -20,7 +20,10 @@ namespace SocialAuth.Models
     public class FacebookProfile
     {
         public string Email { get; set; }
-        public string UserId { get; set; }
+
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
         public Picture Picture { get; set; }
 
         [JsonProperty("last_name")]

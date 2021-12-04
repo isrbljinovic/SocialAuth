@@ -1,5 +1,4 @@
-﻿using System.Security.Authentication;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MongoDB.Driver;
 using SocialAuth.Models;
 
@@ -16,60 +15,77 @@ namespace SocialAuth.Services
         {
             get
             {
-                if (_usersCollection is null)
+                try
                 {
-                    var mongoUrl = new MongoUrl(ApiKeys.DbConnectionString);
+                    if (_usersCollection is null)
+                    {
+                        //var mongoUrl = new MongoUrl(ApiKeys.DbConnectionString);
 
-                    // APIKeys.Connection string is found in the portal under the "Connection String" blade
-                    MongoClientSettings settings = MongoClientSettings.FromUrl(
-                      mongoUrl
-                    );
+                        // APIKeys.Connection string is found in the portal under the "Connection String" blade
+                        MongoClientSettings settings = MongoClientSettings.FromConnectionString(
+                          ApiKeys.DbConnectionString
+                        );
 
-                    settings.SslSettings =
-                        new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+                        settings.SslSettings.CheckCertificateRevocation = false;
+                        settings.SslSettings.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+                        settings.VerifySslCertificate = false;
+                        settings.AllowInsecureTls = true;
 
-                    settings.RetryWrites = false;
+                        settings.ConnectTimeout = System.TimeSpan.FromSeconds(15);
+                        settings.RetryWrites = false;
 
-                    // Initialize the client
-                    var mongoClient = new MongoClient(settings);
+                        // Initialize the client
+                        var mongoClient = new MongoClient(settings);
 
-                    // This will create or get the database
-                    var db = mongoClient.GetDatabase(_dbName);
+                        // This will create or get the database
+                        var db = mongoClient.GetDatabase(_dbName);
 
-                    // This will create or get the collection
-                    var collectionSettings = new MongoCollectionSettings { ReadPreference = ReadPreference.Nearest };
-                    _usersCollection = db.GetCollection<UserProfile>(_collection, collectionSettings);
+                        // This will create or get the collection
+                        var collectionSettings = new MongoCollectionSettings { ReadPreference = ReadPreference.Nearest };
+                        _usersCollection = db.GetCollection<UserProfile>(_collection);
+                    }
+
+                    return _usersCollection;
                 }
-
-                return _usersCollection;
+                catch (System.Exception e)
+                {
+                    throw;
+                }
             }
         }
 
-        public async Task<UserProfile> GetUserProfileByProfileId(string profileId)
+        public UserProfile GetUserProfileByProfileId(string profileId)
         {
-            var userProfile = await UsersCollection
+            var userProfile = UsersCollection
                 .Find(f => f.ProfileId.Equals(profileId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
 
             return userProfile;
         }
 
-        public async Task CreateUserProfile(UserProfile userProfile)
+        public void CreateUserProfile(UserProfile userProfile)
         {
-            var existingUserProfile = await GetUserProfileByProfileId(userProfile.ProfileId);
-            if (existingUserProfile == null)
+            try
             {
-                await UsersCollection.InsertOneAsync(userProfile);
+                var existingUserProfile = GetUserProfileByProfileId(userProfile.ProfileId);
+                if (existingUserProfile == null)
+                {
+                    UsersCollection.InsertOne(userProfile);
+                }
+                else
+                {
+                    UpdateUserProfile(userProfile);
+                }
             }
-            else
+            catch (System.Exception ec)
             {
-                await UpdateUserProfile(userProfile);
+                throw;
             }
         }
 
-        public async Task UpdateUserProfile(UserProfile userProfile)
+        public void UpdateUserProfile(UserProfile userProfile)
         {
-            await UsersCollection.ReplaceOneAsync(t => t.ProfileId.Equals(userProfile.ProfileId), userProfile);
+            UsersCollection.ReplaceOne(t => t.ProfileId.Equals(userProfile.ProfileId), userProfile);
         }
     }
 }
