@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SocialAuth.Models;
 using SocialAuth.ViewModels;
 using Xamarin.Forms;
@@ -17,6 +13,11 @@ namespace SocialAuth.Views
         {
             InitializeComponent();
             BindingContext = new HomePageViewModel(userProfile);
+        }
+
+        private async void Entry_Completed(object sender, EventArgs e)
+        {
+            await ((HomePageViewModel)BindingContext).GetArtistData();
         }
     }
 }

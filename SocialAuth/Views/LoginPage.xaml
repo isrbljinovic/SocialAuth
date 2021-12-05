@@ -4,20 +4,28 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentPage.Content>
-        <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <Label
+                Grid.Row="0"
                 Margin="10"
                 FontSize="22"
                 HorizontalTextAlignment="Center"
-                Text="Please login with your Facebook account to proceed:" />
+                Text="Please login with your Facebook account" />
 
             <Button
+                Grid.Row="1"
+                BackgroundColor="#4768AD"
                 Command="{Binding OnLoginWithFacebookCommand}"
                 HeightRequest="55"
                 HorizontalOptions="CenterAndExpand"
                 Text="Login with Facebook"
+                TextColor="White"
                 VerticalOptions="FillAndExpand"
                 WidthRequest="200" />
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

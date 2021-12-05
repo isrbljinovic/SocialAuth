@@ -53,10 +53,10 @@ namespace SocialAuth.ViewModels
                             //Insert user into DB
                             _userProfileService.CreateUserProfile(socialLoginData);
 
-                            var userProfileFromDb = _userProfileService.GetUserProfileByProfileId(socialLoginData.ProfileId);
+                            //var userProfileFromDb = _userProfileService.GetUserProfileByProfileId(socialLoginData.ProfileId);
 
                             //Success - wellcome in
-                            await App.Current.MainPage.Navigation.PushModalAsync(new HomePage(userProfileFromDb));
+                            await App.Current.MainPage.Navigation.PushModalAsync(new HomePage(socialLoginData));
                             break;
 
                         case FacebookActionStatus.Canceled:

@@ -79,7 +79,7 @@ namespace SocialAuth.Services
             }
             catch (System.Exception ec)
             {
-                throw;
+                return;
             }
         }
 

@@ -1,12 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SocialAuth.Views.HomePage">
+<ContentPage
+    x:Class="SocialAuth.Views.HomePage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+
+            <StackLayout
+                Grid.Row="0"
+                Margin="60,0,0,0"
+                Orientation="Horizontal">
+                <Image
+                    Margin="0,0,5,0"
+                    HeightRequest="35"
+                    Source="{Binding UserPicture, Mode=TwoWay}"
+                    VerticalOptions="Center"
+                    WidthRequest="35" />
+
+                <Label
+                    FontSize="16"
+                    Text="{Binding UserFullName, Mode=TwoWay}"
+                    VerticalOptions="Center" />
+            </StackLayout>
+
+            <StackLayout Grid.Row="1">
+                <Entry
+                    Completed="Entry_Completed"
+                    Placeholder="Unesite naziv izvođača"
+                    Text="{Binding ArtistName, Mode=TwoWay}" />
+                <Image
+                    Margin="5"
+                    HeightRequest="35"
+                    Source="{Binding ArtistPicture, Mode=TwoWay}"
+                    VerticalOptions="Center"
+                    WidthRequest="35" />
+                <Label Text="{Binding ArtistBio, Mode=TwoWay}" />
+            </StackLayout>
+
+            <StackLayout Grid.Row="2">
+                <Button Command="{Binding OnGetTrafficInfoCommand}" Text="Dohvati promet" />
+                <ListView ItemsSource="{Binding TrafficIncidents, Mode=TwoWay}" />
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
