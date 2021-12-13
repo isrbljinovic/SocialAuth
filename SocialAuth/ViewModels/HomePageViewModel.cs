@@ -17,11 +17,13 @@ namespace SocialAuth.ViewModels
     {
         public ICommand OnGetArtistInfoCommand { get; set; }
         public ICommand OnGetTrafficInfoCommand { get; set; }
+        public ICommand OnGetFact { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private LastFmService _lastFmService = new LastFmService();
         private MapQuestService _mapQuestService = new MapQuestService();
+        private FactsService _factsService = new FactsService();
 
         private void HandlePropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -88,6 +90,26 @@ namespace SocialAuth.ViewModels
 
         #endregion TrafficIncidents
 
+        #region Facts
+
+        private string _fact;
+
+        public string FactText
+        {
+            get { return _fact; }
+            set { _fact = value; HandlePropertyChanged(); }
+        }
+
+        private long _numberOfFacts;
+
+        public long NumberOfFacts
+        {
+            get { return _numberOfFacts; }
+            set { _numberOfFacts = value; HandlePropertyChanged(); }
+        }
+
+        #endregion Facts
+
         public HomePageViewModel(UserProfile userProfile)
         {
             UserFullName = userProfile.Name;
@@ -95,6 +117,7 @@ namespace SocialAuth.ViewModels
             TrafficIncidents = new List<string>();
             OnGetArtistInfoCommand = new Command(async () => await GetArtistData());
             OnGetTrafficInfoCommand = new Command(() => GetTrafficInfo());
+            OnGetFact = new Command(() => GetFact());
         }
 
         public async Task GetArtistData()
@@ -151,6 +174,35 @@ namespace SocialAuth.ViewModels
                 }
             }
             catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        private void GetFact()
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var url = $"https://catfact.ninja/fact?max_length=200";
+                    var response = httpClient.GetStringAsync(new Uri(url)).Result;
+
+                    FactDTO fact = JsonConvert.DeserializeObject<FactDTO>(response);
+
+                    Fact f = new Fact(fact.fact, fact.length);
+
+                    _factsService.CreateFact(f);
+
+                    FactText = f.FactText;
+                    HandlePropertyChanged("FactText");
+
+                    var numberOf = _factsService.CountFactsLessThan100();
+                    NumberOfFacts = numberOf;
+                    HandlePropertyChanged("NumberOfFacts");
+                }
+            }
+            catch (Exception)
             {
                 throw;
             }
